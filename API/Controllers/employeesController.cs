@@ -6,6 +6,7 @@ using Infraestructura.Datos;
 using core.models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Core.Interfaces;
 
 namespace API.Controllers
 {
@@ -13,23 +14,23 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class employeesController : ControllerBase
     {
-        private readonly ApplicationDbContext _db;
+        private readonly IRepoEmployee _repo;
          
-        public employeesController(ApplicationDbContext db)
+        public employeesController(IRepoEmployee repo)
         {
-            _db = db;
+            _repo = repo;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<employees>>> GetAllemployees()
         {
-            return Ok(await _db.employees.ToListAsync());
+            return Ok(_repo.GetEmployees());
         }
 
         [HttpGet("{id:int}")]
         public async Task<ActionResult<employees>> GetemployeeById(int id)
         {
-            return Ok(await _db.employees.FirstOrDefaultAsync(item => item.Id == id ));
+            return Ok(_repo.GetEmployeeById(id));
 
         }
     }
