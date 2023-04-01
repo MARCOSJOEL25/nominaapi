@@ -7,6 +7,8 @@ using Core.Interfaces;
 using Infraestructura.Datos;
 using Microsoft.EntityFrameworkCore;
 
+
+
 namespace Infraestructura.Repositorio
 {
     public class RepoEmployee : IRepoEmployee

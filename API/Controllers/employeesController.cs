@@ -14,9 +14,9 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class employeesController : ControllerBase
     {
-        private readonly IRepoEmployee _repo;
+        private readonly IRepositorio<employees> _repo;
          
-        public employeesController(IRepoEmployee repo)
+        public employeesController(IRepositorio<employees> repo)
         {
             _repo = repo;
         }
@@ -24,13 +24,13 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<List<employees>>> GetAllemployees()
         {
-            return Ok(_repo.GetEmployees());
+            return Ok(await _repo.ObtenerTodosAsync());
         }
 
         [HttpGet("{id:int}")]
         public async Task<ActionResult<employees>> GetemployeeById(int id)
         {
-            return Ok(_repo.GetEmployeeById(id));
+            return Ok(await _repo.ObtenerAsync(id));
 
         }
     }
