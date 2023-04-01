@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using core.models;
+using Core.models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infraestructura.Datos
@@ -14,5 +16,13 @@ namespace Infraestructura.Datos
         }
 
         public DbSet<employees> employees { get; set; }
+        public DbSet<user> user { get; set; }
+        public DbSet<job> job { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        }
     }
 }

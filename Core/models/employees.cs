@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using Core.models;
 
 namespace core.models
 {
@@ -17,11 +18,14 @@ namespace core.models
 
         public DateTime birdDate { get; set; }
 
-        public DateTime DataIn { get; set; }
+        public DateTime DataIn { get; set; } = DateTime.Now;
 
-        public int createAt { get; set; }
+        public int createAt { get; set; } 
 
-        public bool isActive { get; set; }
+        [ForeignKey("createAt")]
+        public user user { get; set; } 
+
+        public bool isActive { get; set; } = false;
 
         public int Idjob { get; set; }
 
