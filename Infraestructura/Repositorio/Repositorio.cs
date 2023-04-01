@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Core.Especificaciones;
 using Core.Interfaces;
 using Infraestructura.Datos;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +24,23 @@ namespace Infraestructura.Repositorio
 
         public async Task<IReadOnlyList<T>> ObtenerTodosAsync()
         {
+            
             return await _db.Set<T>().ToListAsync(); 
         }
+
+        public async Task<T> obtenerEspec(IEspecificaciones<T> espec)
+        {
+            return await AplicarEspecificacion(espec).FirstOrDefaultAsync();
+        }
+
+        public async Task<IReadOnlyList<T>> ObtenerTodosEspec(IEspecificaciones<T> espec)
+        {
+            return await AplicarEspecificacion(espec).ToListAsync();
+        }
+
+        private IQueryable<T> AplicarEspecificacion(IEspecificaciones<T> espec)
+        {
+            return EvaluatorEspecification<T>.GetQuery(_db.Set<T>().AsQueryable(), espec);
+        } 
     }
 }

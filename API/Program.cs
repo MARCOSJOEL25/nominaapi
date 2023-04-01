@@ -1,7 +1,13 @@
+using API.Utils;
 using Core.Interfaces;
 using Infraestructura.Datos;
 using Infraestructura.Repositorio;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +21,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(
 //Dependencies
 builder.Services.AddScoped<IRepoEmployee, RepoEmployee>();
 builder.Services.AddScoped(typeof(IRepositorio<>), (typeof(Repositorio<>)));
+builder.Services.AddAutoMapper(typeof(ProfilesMapper));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -48,6 +55,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseStaticFiles();
 
 app.UseAuthorization();
 
