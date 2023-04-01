@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Core.Especificaciones;
 
 namespace Core.Interfaces
 {
@@ -10,5 +11,9 @@ namespace Core.Interfaces
         Task<T> ObtenerAsync(int id);
 
         Task<IReadOnlyList<T>> ObtenerTodosAsync();
+
+        Task<T> obtenerEspec(IEspecificaciones<T> espec);
+
+        Task<IReadOnlyList<T>> ObtenerTodosEspec(IEspecificaciones<T> espec);
     }
 }

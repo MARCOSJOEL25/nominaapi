@@ -1,16 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
-using Core.models;
+using core.models;
 
-namespace core.models
+namespace Core.models.Dto
 {
-    public class employees
-    {   
-        [Key]
+    public class DtoEmployees
+    {
         public int Id { get; set; }
 
         public string FullName { get; set; }
@@ -22,17 +19,10 @@ namespace core.models
 
         public DateTime DataIn { get; set; } = DateTime.Now;
 
-        public int createAt { get; set; } 
-
-        [ForeignKey("createAt")]
-        public user user { get; set; } 
+        public string user { get; set; } 
 
         public bool isActive { get; set; } = false;
 
-        public int Idjob { get; set; }
-
-        [ForeignKey("Idjob")]
-        public job job { get; set; }
-
+        public string job { get; set; }
     }
 }
