@@ -8,9 +8,7 @@ using Core.models.Dto;
 using Infraestructura.Datos;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-
-
-
+using API.Utils;
 
 namespace Infraestructura.Repositorio
 {
@@ -29,19 +27,38 @@ namespace Infraestructura.Repositorio
             var employee = _mapper.Map<DtoEmployeesCreate, employees>(dtoEmployees);
             if(employee.Id > 0)
             {
+                employee.salaryFinal = calcularDeducciones(employee.netSalary);
                 _db.employees.Update(employee);
                 await _db.SaveChangesAsync();
                 return "updated";
             }
+            employee.salaryFinal = calcularDeducciones(employee.netSalary);
             _db.employees.Add(employee);
             await _db.SaveChangesAsync();
             return "created";
 
         }
 
-        public Task<string> DesactiveEmployee(int id)
+        public async Task<string> DesactiveEmployee(int id)
+        {   
+            var employee = await _db.employees.FirstOrDefaultAsync(x => x.Id == id);
+            if(employee == null)
+            {
+                return "not found";
+            }
+
+            employee.isActive = false;
+            _db.employees.Update(employee);
+            await _db.SaveChangesAsync();
+            return "fired";
+        }
+
+        private double calcularDeducciones(double salary) 
         {
-            throw new NotImplementedException();
+            salary = salary - ((salary * Deducciones.AFP) + (salary * Deducciones.ASF));
+            if(salary >= Deducciones.limitISR)
+                return salary - (salary * Deducciones.ISR);
+            return salary;
         }
     }
 }

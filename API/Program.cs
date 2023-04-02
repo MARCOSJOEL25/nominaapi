@@ -14,9 +14,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 var connection = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ApplicationDbContext>(
-        options => options.UseMySql(connection, ServerVersion.AutoDetect(connection))
-        );
+
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connection));
+// builder.Services.AddDbContext<ApplicationDbContext>(
+//         options => options.UseMySql(connection, ServerVersion.AutoDetect(connection))
+//         );
 
 //Dependencies
 builder.Services.AddScoped<IRepoEmployee, RepoEmployee>();
