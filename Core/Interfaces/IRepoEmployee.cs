@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using core.models;
+using Core.models.Dto;
 
 namespace Core.Interfaces
 {
     public interface IRepoEmployee
     {
-        public Task<employees> GetEmployeeById(int id);
-        public Task<IReadOnlyList<employees>> GetEmployees();
+        public Task<string> CreateOrUpdate(DtoEmployeesCreate dtoEmployees);
+        public Task<string> DesactiveEmployee(int id);
     }
 }

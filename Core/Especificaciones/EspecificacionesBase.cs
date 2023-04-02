@@ -20,6 +20,7 @@ namespace Core.Especificaciones
 
         public List<Expression<Func<T, object>>> Includes {get;} = new List<Expression<Func<T, object>>>();
 
+
         protected void AgregarInclude(Expression<Func<T, object>> includeExpression)
         {
             Includes.Add(includeExpression);

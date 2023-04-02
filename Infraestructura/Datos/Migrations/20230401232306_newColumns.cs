@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infraestructura.Datos.Migrations
 {
     /// <inheritdoc />
-    public partial class initialCreate : Migration
+    public partial class newColumns : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -57,8 +57,14 @@ namespace Infraestructura.Datos.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     correo = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    gender = table.Column<string>(type: "varchar(1)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ImagesUrl = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     birdDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     DataIn = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    netSalary = table.Column<double>(type: "double", nullable: false),
+                    salaryFinal = table.Column<double>(type: "double", nullable: false),
                     createAt = table.Column<int>(type: "int", nullable: false),
                     isActive = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     Idjob = table.Column<int>(type: "int", nullable: false)

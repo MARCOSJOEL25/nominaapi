@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infraestructura.Datos.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230331225943_InicialMigracion")]
-    partial class InicialMigracion
+    [Migration("20230401232306_newColumns")]
+    partial class newColumns
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,6 +21,23 @@ namespace Infraestructura.Datos.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
+
+            modelBuilder.Entity("Core.models.user", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("password")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("userName")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("user");
+                });
 
             modelBuilder.Entity("core.models.employees", b =>
                 {
@@ -33,10 +50,14 @@ namespace Infraestructura.Datos.Migrations
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.Property<int>("Idjob")
                         .HasColumnType("int");
+
+                    b.Property<string>("ImagesUrl")
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime>("birdDate")
                         .HasColumnType("datetime(6)");
@@ -48,12 +69,24 @@ namespace Infraestructura.Datos.Migrations
                     b.Property<int>("createAt")
                         .HasColumnType("int");
 
+                    b.Property<string>("gender")
+                        .IsRequired()
+                        .HasColumnType("varchar(1)");
+
                     b.Property<bool>("isActive")
                         .HasColumnType("tinyint(1)");
+
+                    b.Property<double>("netSalary")
+                        .HasColumnType("double");
+
+                    b.Property<double>("salaryFinal")
+                        .HasColumnType("double");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Idjob");
+
+                    b.HasIndex("createAt");
 
                     b.ToTable("employees");
                 });
@@ -65,7 +98,6 @@ namespace Infraestructura.Datos.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("nameJob")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
@@ -81,7 +113,15 @@ namespace Infraestructura.Datos.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Core.models.user", "user")
+                        .WithMany()
+                        .HasForeignKey("createAt")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("job");
+
+                    b.Navigation("user");
                 });
 #pragma warning restore 612, 618
         }

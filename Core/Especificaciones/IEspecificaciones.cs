@@ -10,6 +10,5 @@ namespace Core.Especificaciones
     {
         Expression<Func<T, bool>> Filtro {get;}
         List<Expression<Func<T, object>>> Includes {get;}
-        
     }
 }

@@ -17,6 +17,8 @@ namespace API.Utils
                 .ForMember(d => d.job, o => o.MapFrom(s => s.job.nameJob))
                 .ForMember(d=>d.ImagesUrl, o=>o.MapFrom<ImagesUrl>())
                 .ReverseMap();
+            
+            CreateMap<DtoEmployeesCreate, employees>().ReverseMap();
         }
         
     }

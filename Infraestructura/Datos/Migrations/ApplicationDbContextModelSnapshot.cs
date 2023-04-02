@@ -19,6 +19,26 @@ namespace Infraestructura.Datos.Migrations
                 .HasAnnotation("ProductVersion", "7.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
+            modelBuilder.Entity("Core.models.adicción", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("adicciónSalary")
+                        .HasColumnType("double");
+
+                    b.Property<string>("motivo")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("adicción");
+                });
+
             modelBuilder.Entity("Core.models.user", b =>
                 {
                     b.Property<int>("Id")
@@ -66,8 +86,18 @@ namespace Infraestructura.Datos.Migrations
                     b.Property<int>("createAt")
                         .HasColumnType("int");
 
+                    b.Property<string>("gender")
+                        .IsRequired()
+                        .HasColumnType("varchar(1)");
+
                     b.Property<bool>("isActive")
                         .HasColumnType("tinyint(1)");
+
+                    b.Property<double>("netSalary")
+                        .HasColumnType("double");
+
+                    b.Property<double>("salaryFinal")
+                        .HasColumnType("double");
 
                     b.HasKey("Id");
 

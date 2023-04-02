@@ -17,16 +17,16 @@ namespace Infraestructura.Repositorio
             _db = db;
             
         }
-        public async Task<T> ObtenerAsync(int id)
-        {
-            return await _db.Set<T>().FirstOrDefaultAsync(); 
-        }
+        // public async Task<T> ObtenerAsync(int id)
+        // {
+        //     return await _db.Set<T>().FirstOrDefaultAsync(); 
+        // }
 
-        public async Task<IReadOnlyList<T>> ObtenerTodosAsync()
-        {
+        // public async Task<IReadOnlyList<T>> ObtenerTodosAsync()
+        // {
             
-            return await _db.Set<T>().ToListAsync(); 
-        }
+        //     return await _db.Set<T>().ToListAsync(); 
+        // }
 
         public async Task<T> obtenerEspec(IEspecificaciones<T> espec)
         {
@@ -38,9 +38,19 @@ namespace Infraestructura.Repositorio
             return await AplicarEspecificacion(espec).ToListAsync();
         }
 
+        public async Task<IReadOnlyList<T>> ObtenerTodosBySearh(IEspecificaciones<T> espec)
+        {
+            return await AplicarEspecificacion(espec).ToListAsync();
+        }
+
+        public async Task<IReadOnlyList<T>> createOrUpdate(IEspecificaciones<T> espec)
+        {
+            return await AplicarEspecificacion(espec).ToListAsync();
+        }
+
         private IQueryable<T> AplicarEspecificacion(IEspecificaciones<T> espec)
         {
             return EvaluatorEspecification<T>.GetQuery(_db.Set<T>().AsQueryable(), espec);
-        } 
+        }
     }
 }

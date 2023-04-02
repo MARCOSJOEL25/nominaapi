@@ -18,6 +18,7 @@ namespace Infraestructura.Datos
         public DbSet<employees> employees { get; set; }
         public DbSet<user> user { get; set; }
         public DbSet<job> job { get; set; }
+        public DbSet<adicción> adicción { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -20,5 +20,11 @@ namespace Core.Especificaciones
             AgregarInclude(x => x.user);
             AgregarInclude(x => x.job);
         }
+
+        public EspecificacionesEmployee(string search) : base(x => x.FullName.ToLower().Contains(search.ToLower()))
+        {
+            AgregarInclude(x => x.user);
+            AgregarInclude(x => x.job);
+        }
     }
 }

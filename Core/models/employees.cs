@@ -16,11 +16,16 @@ namespace core.models
         public string FullName { get; set; }
         public string correo { get; set; }
 
+        public char gender {get; set; }
+
         public string ImagesUrl { get; set; }
 
         public DateTime birdDate { get; set; }
 
         public DateTime DataIn { get; set; } = DateTime.Now;
+
+        public double netSalary {get; set;}
+        public double salaryFinal {get; set;}
 
         public int createAt { get; set; } 
 
