@@ -31,7 +31,7 @@ namespace API.Controllers
             _response = new DtoResponse();
         }
 
-        [HttpGet(Name = nameof(GetAllemployees))]
+        [HttpGet]
         public async Task<ActionResult<List<DtoEmployees>>> GetAllemployees()
         {
             var espec = new EspecificacionesEmployee();
@@ -72,5 +72,23 @@ namespace API.Controllers
             _response.message = "se ha creado exitosamente";
             return Ok(_response);
         }
+
+        [HttpDelete]
+        public async Task<ActionResult<DtoResponse>> deleteEmployee(int id)
+        {
+            var resp = await _RepoEmployee.DesactiveEmployee(id);
+            if (resp == "not found")
+            {
+                _response.results = null;
+                _response.message = "No se encontro el usuarios";
+                return Ok(_response);
+            }
+
+            _response.results = null;
+            _response.message = "se ha desactivado exitosamente";
+            return Ok(_response);
+
+        }
+
     }
 }

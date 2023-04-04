@@ -9,7 +9,7 @@ namespace Core.Especificaciones
 {
     public class EspecificacionesEmployee : EspecificacionesBase<employees>
     {
-        public EspecificacionesEmployee()
+        public EspecificacionesEmployee() : base(x => x.isActive)
         {
             AgregarInclude(x => x.user);
             AgregarInclude(x => x.job);
