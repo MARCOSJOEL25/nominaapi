@@ -3,7 +3,6 @@ using System;
 using Infraestructura.Datos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
@@ -12,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infraestructura.Datos.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230402035251_remoteLocal")]
-    partial class remoteLocal
+    [Migration("20230405222824_test")]
+    partial class test
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,9 +20,7 @@ namespace Infraestructura.Datos.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.4")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
-
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Core.models.adicción", b =>
                 {
@@ -31,16 +28,14 @@ namespace Infraestructura.Datos.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
-
                     b.Property<int>("EmployeeId")
                         .HasColumnType("int");
 
                     b.Property<double>("adicciónSalary")
-                        .HasColumnType("float");
+                        .HasColumnType("double");
 
                     b.Property<string>("motivo")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("ID");
 
@@ -53,13 +48,17 @@ namespace Infraestructura.Datos.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<byte[]>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("longblob");
 
-                    b.Property<string>("password")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<byte[]>("PasswordSalt")
+                        .IsRequired()
+                        .HasColumnType("longblob");
 
                     b.Property<string>("userName")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -72,46 +71,49 @@ namespace Infraestructura.Datos.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
                     b.Property<DateTime>("DataIn")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<int>("IdAdiccion")
+                        .HasColumnType("int");
 
                     b.Property<int>("Idjob")
                         .HasColumnType("int");
 
                     b.Property<string>("ImagesUrl")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime>("birdDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("correo")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("createAt")
                         .HasColumnType("int");
 
                     b.Property<string>("gender")
                         .IsRequired()
-                        .HasColumnType("nvarchar(1)");
+                        .HasColumnType("varchar(1)");
 
                     b.Property<bool>("isActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<double>("netSalary")
-                        .HasColumnType("float");
+                        .HasColumnType("double");
 
                     b.Property<double>("salaryFinal")
-                        .HasColumnType("float");
+                        .HasColumnType("double");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IdAdiccion");
 
                     b.HasIndex("Idjob");
 
@@ -126,10 +128,8 @@ namespace Infraestructura.Datos.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
                     b.Property<string>("nameJob")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -138,6 +138,12 @@ namespace Infraestructura.Datos.Migrations
 
             modelBuilder.Entity("core.models.employees", b =>
                 {
+                    b.HasOne("Core.models.adicción", "adicción")
+                        .WithMany()
+                        .HasForeignKey("IdAdiccion")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("core.models.job", "job")
                         .WithMany()
                         .HasForeignKey("Idjob")
@@ -149,6 +155,8 @@ namespace Infraestructura.Datos.Migrations
                         .HasForeignKey("createAt")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("adicción");
 
                     b.Navigation("job");
 

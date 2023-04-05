@@ -13,7 +13,7 @@ namespace Core.models.Dto
         public string FullName { get; set; }
         public string correo { get; } = "example@gmail.com";
 
-        public char gender {get; set; }
+        public char gender { get; } = 'M';
 
         public string ImagesUrl { get; } = "";
 
@@ -27,6 +27,15 @@ namespace Core.models.Dto
         public int createAt { get; } = 1;
         public bool isActive { get;} = true;
 
-        public int Idjob { get; } = 1;
+        public int Idjob { get; } = randomJob();
+
+        private static int randomJob()
+        {
+            int min = 1;
+            int max = 12;
+
+            Random rnd = new Random();
+            return rnd.Next(min, max + 1);
+        }
     }
 }

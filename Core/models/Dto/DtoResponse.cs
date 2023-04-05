@@ -9,5 +9,6 @@ namespace Core.models.Dto
     {
         public object results { get; set; }
         public string message { get; set; }
+        public int statusCode { get; set; }
     }
 }

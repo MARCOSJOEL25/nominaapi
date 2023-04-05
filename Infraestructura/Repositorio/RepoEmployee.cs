@@ -9,6 +9,8 @@ using Infraestructura.Datos;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using API.Utils;
+using Microsoft.Extensions.DependencyInjection;
+using Core.models;
 
 namespace Infraestructura.Repositorio
 {
@@ -27,12 +29,12 @@ namespace Infraestructura.Repositorio
             var employee = _mapper.Map<DtoEmployeesCreate, employees>(dtoEmployees);
             if(employee.Id > 0)
             {
-                employee.salaryFinal = calcularDeducciones(employee.netSalary);
+                employee.salaryFinal = (int)calcularDeducciones(employee.netSalary);
                 _db.employees.Update(employee);
                 await _db.SaveChangesAsync();
                 return "updated";
             }
-            employee.salaryFinal = calcularDeducciones(employee.netSalary);
+            employee.salaryFinal = (int)calcularDeducciones(employee.netSalary);
             _db.employees.Add(employee);
             await _db.SaveChangesAsync();
             return "created";
@@ -51,6 +53,19 @@ namespace Infraestructura.Repositorio
             _db.employees.Update(employee);
             await _db.SaveChangesAsync();
             return "fired";
+        }
+
+        public async Task<string> Adicciones(adicción _adicción) 
+        {
+            var employee = await _db.employees.FirstOrDefaultAsync(x => x.Id == _adicción.EmployeeId);
+            if(employee == null)
+            {
+                return "not found";
+            }
+
+            _db.adicción.Add(_adicción);
+            await _db.SaveChangesAsync();
+            return "Done";
         }
 
         private double calcularDeducciones(double salary) 

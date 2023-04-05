@@ -2,12 +2,19 @@ using API.Utils;
 using Core.Interfaces;
 using Infraestructura.Datos;
 using Infraestructura.Repositorio;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
+
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,14 +22,58 @@ var builder = WebApplication.CreateBuilder(args);
 
 var connection = builder.Configuration.GetConnectionString("DefaultConnection");
 
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connection));
-// builder.Services.AddDbContext<ApplicationDbContext>(
-//         options => options.UseMySql(connection, ServerVersion.AutoDetect(connection))
-//         );
+//builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connection));
+builder.Services.AddDbContext<ApplicationDbContext>(
+        options => options.UseMySql(connection, ServerVersion.AutoDetect(connection))
+        );
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
+                      });
+});
+
 
 //Dependencies
 builder.Services.AddScoped<IRepoEmployee, RepoEmployee>();
 builder.Services.AddScoped(typeof(IRepositorio<>), (typeof(Repositorio<>)));
+builder.Services.AddScoped<IRepoUser, RepoUser>();
+
+
+//Auntenticacion
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(options =>
+                    {
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuerSigningKey = true,
+                            IssuerSigningKey = new SymmetricSecurityKey(
+                                System.Text.Encoding.ASCII.GetBytes(
+                                    builder.Configuration.GetSection("AppSettings:Token").Value)),
+                            ValidateIssuer = false,
+                            ValidateAudience = false
+                        };
+                    });
+//Auntenticacion/>
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.OperationFilter<SecurityRequirementsOperationFilter>();
+
+    c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    {
+        Description = "Autorizacion Standar, Usar Bearer. Ejemplo \"bearer {token}\"",
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+});
+
 builder.Services.AddAutoMapper(typeof(ProfilesMapper));
 
 builder.Services.AddControllers();
@@ -59,6 +110,9 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
+
+app.UseCors(MyAllowSpecificOrigins);
+
 
 app.UseAuthorization();
 
