@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infraestructura.Datos.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230405222824_test")]
-    partial class test
+    [Migration("20230405224416_test2")]
+    partial class test2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -38,6 +38,8 @@ namespace Infraestructura.Datos.Migrations
                         .HasColumnType("longtext");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("EmployeeId");
 
                     b.ToTable("adicción");
                 });
@@ -71,6 +73,9 @@ namespace Infraestructura.Datos.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<double>("Adiccion")
+                        .HasColumnType("double");
+
                     b.Property<DateTime>("DataIn")
                         .HasColumnType("datetime(6)");
 
@@ -78,9 +83,6 @@ namespace Infraestructura.Datos.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
-
-                    b.Property<int>("IdAdiccion")
-                        .HasColumnType("int");
 
                     b.Property<int>("Idjob")
                         .HasColumnType("int");
@@ -113,8 +115,6 @@ namespace Infraestructura.Datos.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdAdiccion");
-
                     b.HasIndex("Idjob");
 
                     b.HasIndex("createAt");
@@ -136,14 +136,19 @@ namespace Infraestructura.Datos.Migrations
                     b.ToTable("job");
                 });
 
-            modelBuilder.Entity("core.models.employees", b =>
+            modelBuilder.Entity("Core.models.adicción", b =>
                 {
-                    b.HasOne("Core.models.adicción", "adicción")
+                    b.HasOne("core.models.employees", "employees")
                         .WithMany()
-                        .HasForeignKey("IdAdiccion")
+                        .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("employees");
+                });
+
+            modelBuilder.Entity("core.models.employees", b =>
+                {
                     b.HasOne("core.models.job", "job")
                         .WithMany()
                         .HasForeignKey("Idjob")
@@ -155,8 +160,6 @@ namespace Infraestructura.Datos.Migrations
                         .HasForeignKey("createAt")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("adicción");
 
                     b.Navigation("job");
 

@@ -39,9 +39,7 @@ namespace core.models
         [ForeignKey("Idjob")]
         public job job { get; set; }
 
-        public int IdAdiccion { get; set; }
+        public double Adiccion { get; set; }
 
-        [ForeignKey("IdAdiccion")]
-        public adicción adicción { get; set; }
     }
 }

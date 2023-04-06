@@ -7,29 +7,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infraestructura.Datos.Migrations
 {
     /// <inheritdoc />
-    public partial class test : Migration
+    public partial class test2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterDatabase()
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "adicción",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    EmployeeId = table.Column<int>(type: "int", nullable: false),
-                    adicciónSalary = table.Column<double>(type: "double", nullable: false),
-                    motivo = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_adicción", x => x.ID);
-                })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
@@ -85,17 +68,11 @@ namespace Infraestructura.Datos.Migrations
                     createAt = table.Column<int>(type: "int", nullable: false),
                     isActive = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     Idjob = table.Column<int>(type: "int", nullable: false),
-                    IdAdiccion = table.Column<int>(type: "int", nullable: false)
+                    Adiccion = table.Column<double>(type: "double", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_employees", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_employees_adicción_IdAdiccion",
-                        column: x => x.IdAdiccion,
-                        principalTable: "adicción",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_employees_job_Idjob",
                         column: x => x.Idjob,
@@ -111,15 +88,38 @@ namespace Infraestructura.Datos.Migrations
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
+            migrationBuilder.CreateTable(
+                name: "adicción",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    EmployeeId = table.Column<int>(type: "int", nullable: false),
+                    adicciónSalary = table.Column<double>(type: "double", nullable: false),
+                    motivo = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_adicción", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_adicción_employees_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "employees",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_adicción_EmployeeId",
+                table: "adicción",
+                column: "EmployeeId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_employees_createAt",
                 table: "employees",
                 column: "createAt");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_employees_IdAdiccion",
-                table: "employees",
-                column: "IdAdiccion");
 
             migrationBuilder.CreateIndex(
                 name: "IX_employees_Idjob",
@@ -131,10 +131,10 @@ namespace Infraestructura.Datos.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "employees");
+                name: "adicción");
 
             migrationBuilder.DropTable(
-                name: "adicción");
+                name: "employees");
 
             migrationBuilder.DropTable(
                 name: "job");

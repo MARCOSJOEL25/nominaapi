@@ -12,6 +12,8 @@ namespace Core.Interfaces
     {
         public Task<string> CreateOrUpdate(DtoEmployeesCreate dtoEmployees);
         public Task<string> DesactiveEmployee(int id);
-        public Task<string> Adicciones(adicción _adicción);
+        public Task<string> Adicciones(DtoAdiccion _adicción);
+        public Task<int> searchAdicciones(int id);
+
     }
 }

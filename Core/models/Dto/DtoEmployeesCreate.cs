@@ -29,6 +29,8 @@ namespace Core.models.Dto
 
         public int Idjob { get; } = randomJob();
 
+        public double Adiccion { get; } = 0;
+
         private static int randomJob()
         {
             int min = 1;

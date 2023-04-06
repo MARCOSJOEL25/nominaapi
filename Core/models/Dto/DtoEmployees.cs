@@ -30,5 +30,9 @@ namespace Core.models.Dto
 
         public string job { get; set; }
 
+        public double Adiccion { get; set; } 
+        public int ISR { get; set; } 
+        public int AFP { get; set; } 
+        public int ARS { get; set; }
     }
 }

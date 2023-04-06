@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using core.models;
+using Core.models;
 using Core.models.Dto;
 
 namespace API.Utils
@@ -19,6 +20,7 @@ namespace API.Utils
                 .ReverseMap();
             
             CreateMap<DtoEmployeesCreate, employees>().ReverseMap();
+            CreateMap<DtoAdiccion, adicción>().ReverseMap();
         }
         
     }

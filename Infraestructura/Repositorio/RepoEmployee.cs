@@ -11,6 +11,7 @@ using AutoMapper;
 using API.Utils;
 using Microsoft.Extensions.DependencyInjection;
 using Core.models;
+using System.ComponentModel;
 
 namespace Infraestructura.Repositorio
 {
@@ -53,9 +54,18 @@ namespace Infraestructura.Repositorio
             _db.employees.Update(employee);
             await _db.SaveChangesAsync();
             return "fired";
-        }
+        } 
+        public async Task<int> searchAdicciones(int id)
+        {
+            var addicion = await _db.adicción.FirstOrDefaultAsync(x => x.EmployeeId == id);
+            if(addicion == null)
+            {
+                return 0;
+            }
+            return (int)addicion.adicciónSalary;
 
-        public async Task<string> Adicciones(adicción _adicción) 
+        }
+        public async Task<string> Adicciones(DtoAdiccion _adicción) 
         {
             var employee = await _db.employees.FirstOrDefaultAsync(x => x.Id == _adicción.EmployeeId);
             if(employee == null)
@@ -63,7 +73,7 @@ namespace Infraestructura.Repositorio
                 return "not found";
             }
 
-            _db.adicción.Add(_adicción);
+            _db.adicción.Add(_mapper.Map<DtoAdiccion, adicción>(_adicción));
             await _db.SaveChangesAsync();
             return "Done";
         }

@@ -14,6 +14,7 @@ using Microsoft.VisualBasic;
 using Microsoft.AspNetCore.Authorization;
 using System.Diagnostics.Metrics;
 using Core.models;
+using API.Utils;
 
 namespace API.Controllers
 {
@@ -41,7 +42,22 @@ namespace API.Controllers
         {
             var espec = new EspecificacionesEmployee();
             var results = await _repo.ObtenerTodosEspec(espec);
-            return Ok(_Mapper.Map<IReadOnlyList<employees>, IReadOnlyList<DtoEmployees>>(results));
+            var res = _Mapper.Map<IReadOnlyList<employees>, IReadOnlyList<DtoEmployees>>(results);
+
+            foreach (var item in res)
+            {
+                await calcularImpuestosAsync(item);
+            }
+            
+            return Ok(res);
+        }
+
+        private async Task calcularImpuestosAsync(DtoEmployees employee)
+        {
+            employee.ISR = (int)(employee.netSalary * Deducciones.ISR);
+            employee.AFP = (int)(employee.netSalary * Deducciones.AFP);
+            employee.ARS = (int)(employee.netSalary * Deducciones.ASF);
+            employee.Adiccion = await _RepoEmployee.searchAdicciones(employee.Id);
         }
 
         [HttpGet("{id:int}", Name = nameof(GetemployeeById))]
@@ -97,13 +113,14 @@ namespace API.Controllers
 
 
         [HttpPost("/adiccion", Name = nameof(Adicciones))]
-        public async Task<ActionResult<DtoResponse>> Adicciones([FromBody] adicción _adicción) 
+        public async Task<ActionResult<DtoResponse>> Adicciones([FromBody] DtoAdiccion _adicción) 
         {
             var resp = await _RepoEmployee.Adicciones(_adicción);
             if(resp == "not found")
             {
                 _response.message = "No encontrado";
                 _response.statusCode = 404;
+                Console.Write("prueba");
                 return Ok(_response);
             }
 
