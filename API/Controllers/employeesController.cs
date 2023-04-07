@@ -38,7 +38,7 @@ namespace API.Controllers
 
         [HttpGet(Name = nameof(GetAllemployees))]
 
-        public async Task<ActionResult<EmployeeTotal>> GetAllemployees()
+        public async Task<ActionResult<EmployeeTotal>> GetAllemployees(int page = 1, int pageSize = 3)
         {
             var espec = new EspecificacionesEmployee();
             var results = await _repo.ObtenerTodosEspec(espec);
@@ -49,17 +49,49 @@ namespace API.Controllers
                 await calcularImpuestosAsync(item);
             }
 
+            //repsonse & pagination
             EmployeeTotal respuesta = new EmployeeTotal();
+            respuesta.total = res.Count;
 
-            return Ok(res);
+            List<DtoEmployees> employeesActive = new List<DtoEmployees>();
+            List<DtoEmployees> employeesInactive = new List<DtoEmployees>();
+
+            foreach (var employeesItem in res)
+            {
+                if (employeesItem.isActive)
+                {
+                    employeesActive.Add(employeesItem);
+                }
+                else
+                {
+                    employeesInactive.Add(employeesItem);
+                }
+            }
+            respuesta.totalactive = employeesActive.Count;
+            respuesta.totalinactive = employeesInactive.Count;
+
+            respuesta.active = employeesActive
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToArray();
+            respuesta.totalPages = (int)Math.Ceiling((decimal)respuesta.total / pageSize);
+            respuesta.inactive = employeesInactive.ToArray();
+            respuesta.Page = page;
+
+            return Ok(respuesta);
         }
 
         private async Task calcularImpuestosAsync(DtoEmployees employee)
         {
-            employee.ISR = (int)(employee.netSalary * Deducciones.ISR);
+            if(employee.salaryFinal >= Deducciones.limitISR)
+            {
+                employee.ISR = (int)(employee.netSalary * Deducciones.ISR);
+            }
             employee.AFP = (int)(employee.netSalary * Deducciones.AFP);
             employee.ARS = (int)(employee.netSalary * Deducciones.ASF);
             employee.Adiccion = await _RepoEmployee.searchAdicciones(employee.Id);
+            employee.salaryFinal = employee.salaryFinal + employee.Adiccion;
+
         }
 
         [HttpGet("{id:int}", Name = nameof(GetemployeeById))]
@@ -70,12 +102,33 @@ namespace API.Controllers
             return Ok(_Mapper.Map<employees, DtoEmployees>(results));
         }
 
-        [HttpGet("{search}", Name = nameof(GetemployeeBySearch))]
-        public async Task<ActionResult<DtoEmployees>> GetemployeeBySearch(string search)
+        [HttpGet("{search}/{isActive}", Name = nameof(GetemployeeBySearch))]
+        public async Task<ActionResult<DtoEmployees>> GetemployeeBySearch(string search, bool isActive)
         {
             var espec = new EspecificacionesEmployee(search);
             var results = await _repo.ObtenerTodosBySearh(espec);
-            return Ok(_Mapper.Map<IReadOnlyList<employees>, IReadOnlyList<DtoEmployees>>(results));
+            var resp = _Mapper.Map<IReadOnlyList<employees>, IReadOnlyList<DtoEmployees>>(results);
+
+            List<DtoEmployees> respuesta = new List<DtoEmployees>();
+
+            foreach (var item in resp)
+            {
+                if (isActive)
+                {
+                    if (item.isActive)
+                    {
+                        respuesta.Add(item);
+                    }
+                } else 
+                {
+                    if (!item.isActive)
+                    {
+                        respuesta.Add(item);
+                    }
+                }
+            }
+
+            return Ok(respuesta);
         }
 
 
