@@ -38,7 +38,7 @@ namespace API.Controllers
 
         [HttpGet(Name = nameof(GetAllemployees))]
 
-        public async Task<ActionResult<List<DtoEmployees>>> GetAllemployees()
+        public async Task<ActionResult<EmployeeTotal>> GetAllemployees()
         {
             var espec = new EspecificacionesEmployee();
             var results = await _repo.ObtenerTodosEspec(espec);
@@ -48,7 +48,9 @@ namespace API.Controllers
             {
                 await calcularImpuestosAsync(item);
             }
-            
+
+            EmployeeTotal respuesta = new EmployeeTotal();
+
             return Ok(res);
         }
 
