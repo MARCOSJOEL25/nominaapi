@@ -38,7 +38,7 @@ namespace API.Controllers
 
         [HttpGet(Name = nameof(GetAllemployees))]
 
-        public async Task<ActionResult<EmployeeTotal>> GetAllemployees(int page = 1, int pageSize = 3)
+        public async Task<ActionResult<EmployeeTotal>> GetAllemployees(int page = 1, int pageSize = 8)
         {
             var espec = new EspecificacionesEmployee();
             var results = await _repo.ObtenerTodosEspec(espec);
